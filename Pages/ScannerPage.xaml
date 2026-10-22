@@ -1,0 +1,93 @@
+<UserControl x:Class="Atomic.Pages.ScannerPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="clr-namespace:Atomic.Core">
+    <UserControl.Resources>
+        <DataTemplate x:Key="KvRow">
+            <Grid Margin="0,4,0,0">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Key}" Foreground="{StaticResource Muted}" FontSize="12"/>
+                <TextBlock Grid.Column="1" Text="{Binding Value}" FontSize="12" TextAlignment="Right" TextTrimming="CharacterEllipsis" Margin="12,0,0,0" ToolTip="{Binding Value}"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="SpecCard">
+            <Border Style="{StaticResource Tile}" Padding="18,16" Margin="0,0,12,12">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Style="{StaticResource Badge}" Width="36" Height="36" CornerRadius="12">
+                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Icon}" Foreground="{StaticResource Accent2}"/>
+                        </Border>
+                        <TextBlock Text="{Binding Title}" Style="{StaticResource Caps}" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding Main}" FontSize="14.5" FontWeight="SemiBold" Margin="0,12,0,6" TextTrimming="CharacterEllipsis" ToolTip="{Binding Main}"/>
+                    <ItemsControl ItemsSource="{Binding Rows}" ItemTemplate="{StaticResource KvRow}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="HealthRow">
+            <Border BorderBrush="{StaticResource Line}" BorderThickness="0,0,0,1" Padding="0,11">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <Border Width="26" Height="26" CornerRadius="13" Background="{Binding Bg}" VerticalAlignment="Top">
+                        <TextBlock Text="{Binding Glyph}" Style="{StaticResource Icon}" FontSize="11" Foreground="{Binding Fg}"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                        <TextBlock Text="{Binding Title}" FontSize="13.5" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding Text}" Style="{StaticResource MutedText}" FontSize="12" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="VolRow">
+            <StackPanel Margin="0,0,0,14">
+                <Grid>
+                    <TextBlock Text="{Binding Name}" FontSize="13"/>
+                    <TextBlock Text="{Binding Usage}" FontSize="12" Foreground="{StaticResource Muted}" HorizontalAlignment="Right"/>
+                </Grid>
+                <Grid Height="8" Margin="0,7,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="{Binding UsedStar}"/><ColumnDefinition Width="{Binding FreeStar}"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.ColumnSpan="2" CornerRadius="4" Background="#1FFFFFFF"/>
+                    <Border CornerRadius="4" Background="{Binding Bar}"/>
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,10,0" Margin="28,20,12,0">
+        <StackPanel>
+            <Grid Margin="0,0,12,16">
+                <StackPanel>
+                    <TextBlock x:Name="SubTitle" Style="{StaticResource MutedText}" FontSize="11.5"/>
+                    <TextBlock Text="{l:U 'Specs &amp; Health'}" Style="{StaticResource H1}" Margin="0,4,0,0"/>
+                </StackPanel>
+                <Button Content="{l:T 'Scan again'}" Style="{StaticResource GhostBtn}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Rescan_Click"/>
+            </Grid>
+
+            <ItemsControl x:Name="Specs" ItemTemplate="{StaticResource SpecCard}">
+                <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="3"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+            </ItemsControl>
+
+            <Grid Margin="0,2,12,0">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="1.5*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <Border Style="{StaticResource Card}" VerticalAlignment="Top">
+                    <StackPanel>
+                        <Grid>
+                            <TextBlock Text="{l:T 'Health check'}" Style="{StaticResource H2}"/>
+                            <TextBlock x:Name="HealthSummary" Style="{StaticResource MutedText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </Grid>
+                        <ItemsControl x:Name="HealthList" ItemTemplate="{StaticResource HealthRow}" Margin="0,6,0,0"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="{l:T Drives}" Style="{StaticResource H2}" Margin="0,0,0,16"/>
+                        <ItemsControl x:Name="Volumes" ItemTemplate="{StaticResource VolRow}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <Border Height="18"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

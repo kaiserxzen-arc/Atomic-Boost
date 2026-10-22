@@ -1,0 +1,5 @@
+<Application x:Class="Atomic.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- resources (palette + Themes/Theme.xaml) are loaded by Core/Themes.cs so the theme can be switched -->
+</Application>

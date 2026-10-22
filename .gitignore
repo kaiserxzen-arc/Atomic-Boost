@@ -1,0 +1,11 @@
+# build output
+bin/
+obj/
+dist/
+*.exe
+*.user
+.vs/
+
+# the logo belongs to the owner and is kept out of the repo
+Logo.png
+Atomic.ico

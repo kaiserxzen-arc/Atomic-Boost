@@ -1,0 +1,109 @@
+<UserControl x:Class="Atomic.Pages.SettingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="clr-namespace:Atomic.Core">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,10,0" Margin="28,20,12,0">
+        <StackPanel>
+            <StackPanel Margin="0,0,0,16">
+                <TextBlock Text="{l:T 'Every change can be undone'}" Style="{StaticResource MutedText}" FontSize="11.5"/>
+                <TextBlock Text="{l:U 'Settings &amp; Backups'}" Style="{StaticResource H1}" Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <Grid Margin="0,0,12,0">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+
+                <!-- language / sounds -->
+                <Border Style="{StaticResource Card}" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="{l:T Appearance}" Style="{StaticResource H2}" Margin="0,0,0,8"/>
+
+                        <TextBlock Text="{l:T Language}" FontSize="13.5" FontWeight="SemiBold" Margin="0,10,0,8"/>
+                        <Border Style="{StaticResource TabStrip}" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton x:Name="LangEn" Style="{StaticResource TabPill}" GroupName="Lang" Content="English" Tag="en"/>
+                                <RadioButton x:Name="LangTh" Style="{StaticResource TabPill}" GroupName="Lang" Content="ภาษาไทย" Tag="th" Margin="0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid Margin="0,20,0,0">
+                            <StackPanel Margin="0,0,64,0">
+                                <TextBlock Text="{l:T 'Button sounds'}" FontSize="13.5" FontWeight="SemiBold"/>
+                                <TextBlock Text="{l:T 'A short sound on the main buttons and the switches.'}" Style="{StaticResource Desc2}" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <CheckBox x:Name="OptSounds" Style="{StaticResource Toggle}" HorizontalAlignment="Right" Click="Opt_Click"/>
+                        </Grid>
+                        <Grid Margin="0,18,0,0">
+                            <StackPanel Margin="0,0,64,0">
+                                <TextBlock Text="{l:T 'Start with Windows'}" FontSize="13.5" FontWeight="SemiBold"/>
+                                <TextBlock Text="{l:T 'Opens hidden next to the clock when you sign in, so Auto Game Mode is ready for every game. No permission prompt.'}" Style="{StaticResource Desc2}" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <CheckBox x:Name="OptAutostart" Style="{StaticResource Toggle}" HorizontalAlignment="Right" IsEnabled="False" Click="Autostart_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="{l:T Settings}" Style="{StaticResource H2}" Margin="0,0,0,8"/>
+                        <Grid Margin="0,10,0,0">
+                            <StackPanel Margin="0,0,64,0">
+                                <TextBlock Text="{l:T 'Automatic restore point'}" FontSize="13.5" FontWeight="SemiBold"/>
+                                <TextBlock Text="{l:T 'Create a System Restore point before the first change of each session. Only when System Protection is already on - Atomic never turns it on.'}" Style="{StaticResource Desc2}" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <CheckBox x:Name="OptRestore" Style="{StaticResource Toggle}" HorizontalAlignment="Right" Click="Opt_Click"/>
+                        </Grid>
+                        <Grid Margin="0,18,0,0">
+                            <StackPanel Margin="0,0,64,0">
+                                <TextBlock Text="{l:T 'Confirm risky tweaks'}" FontSize="13.5" FontWeight="SemiBold"/>
+                                <TextBlock Text="{l:T 'Ask before applying tweaks that break a feature or lower security. Removing apps always asks.'}" Style="{StaticResource Desc2}" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <CheckBox x:Name="OptConfirm" Style="{StaticResource Toggle}" HorizontalAlignment="Right" Click="Opt_Click"/>
+                        </Grid>
+                        <TextBlock Text="{l:T 'When I press X'}" FontSize="13.5" FontWeight="SemiBold" Margin="0,18,0,8"/>
+                        <Border Style="{StaticResource TabStrip}" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton x:Name="CloseAsk" Style="{StaticResource TabPill}" GroupName="CloseAction" Content="{l:T 'Ask every time'}" Tag=""/>
+                                <RadioButton x:Name="CloseTray" Style="{StaticResource TabPill}" GroupName="CloseAction" Content="{l:T 'Run in the background'}" Tag="tray"/>
+                                <RadioButton x:Name="CloseExit" Style="{StaticResource TabPill}" GroupName="CloseAction" Content="{l:T Quit}" Tag="exit" Margin="0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Margin="0,20,0,0" Padding="0,14,0,0">
+                            <TextBlock x:Name="About" Style="{StaticResource MutedText}" FontSize="12" LineHeight="18"/>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border Style="{StaticResource Card}" Margin="0,14,12,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{l:T Backups}" Style="{StaticResource H2}"/>
+                        <TextBlock x:Name="BackupTip" Style="{StaticResource Info}"/>
+                    </StackPanel>
+                    <TextBlock x:Name="BackupInfo" Style="{StaticResource MutedText}" Margin="0,8,0,16"/>
+                    <WrapPanel>
+                        <Button Content="{l:T 'Create restore point'}" Style="{StaticResource AccentBtn}" Margin="0,0,8,8" Click="RestorePoint_Click"/>
+                        <Button Content="{l:T 'Open System Restore'}" Style="{StaticResource GhostBtn}" Margin="0,0,8,8" Click="OpenRestore_Click"/>
+                        <Button Content="{l:T 'Revert all tweaks'}" Style="{StaticResource GhostBtn}" Margin="0,0,8,8" Click="RevertAll_Click"/>
+                        <Button Content="{l:T 'Open data folder'}" Style="{StaticResource GhostBtn}" Margin="0,0,8,8" Click="OpenFolder_Click"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}" Margin="0,14,12,0">
+                <StackPanel>
+                    <Grid Margin="0,0,0,12">
+                        <TextBlock Text="{l:T 'Activity log'}" Style="{StaticResource H2}" VerticalAlignment="Center"/>
+                        <Button Content="&#xE72C;" Style="{StaticResource IconBtn}" HorizontalAlignment="Right" ToolTip="{l:T Reload}" Click="ReloadLog_Click"/>
+                    </Grid>
+                    <Border Background="#99000000" CornerRadius="12" Padding="14,12">
+                        <ScrollViewer x:Name="LogScroll" Height="240" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <TextBlock x:Name="LogText" FontFamily="Consolas, Leelawadee UI" FontSize="11.5" Foreground="{StaticResource Soft}"/>
+                        </ScrollViewer>
+                    </Border>
+                </StackPanel>
+            </Border>
+            <Border Height="18"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

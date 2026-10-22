@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- DPI awareness stays in app.manifest (it is what WPF reads); the Windows Forms analyzer would rather have it elsewhere -->
+    <NoWarn>$(NoWarn);WFAC010</NoWarn>
+    <AssemblyName>Atomic</AssemblyName>
+    <RootNamespace>Atomic</RootNamespace>
+    <Version>1.0.0</Version>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- the logo files are not in the public repo: without them the exe gets the default icon -->
+    <ApplicationIcon Condition="Exists('Atomic.ico')">Atomic.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Kanit, the typeface of the whole UI (SIL Open Font License, see Fonts/OFL.txt) -->
+    <Resource Include="Fonts\*.ttf" />
+    <!-- the logo as shown in the top bar; Atomic.ico is the same picture -->
+    <Resource Include="Logo.png" Condition="Exists('Logo.png')" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Windows Forms is only here for the tray icon: keep its namespaces out of the WPF code -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+</Project>

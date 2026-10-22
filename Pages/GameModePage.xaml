@@ -1,0 +1,147 @@
+<UserControl x:Class="Atomic.Pages.GameModePage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:l="clr-namespace:Atomic.Core">
+    <UserControl.Resources>
+        <DataTemplate x:Key="OptionRow">
+            <Grid Margin="0,0,0,16">
+                <StackPanel Margin="0,0,64,0">
+                    <TextBlock Text="{Binding Title}" FontSize="13.5" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding Desc}" Style="{StaticResource Desc2}" Margin="0,3,0,0"/>
+                </StackPanel>
+                <CheckBox Style="{StaticResource Toggle}" IsChecked="{Binding On, Mode=TwoWay}" HorizontalAlignment="Right" Click="Option_Click"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="AppRow">
+            <Border Background="#12FFFFFF" CornerRadius="12" Padding="14,7,8,7" Margin="0,0,0,6">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Exe}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding State}" Foreground="{StaticResource Green}" FontSize="11.5" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="&#xE711;" Tag="{Binding Exe}" Style="{StaticResource IconBtn}" Width="28" Height="28" FontSize="10" Margin="0,0,10,0" ToolTip="{l:T Remove}" Click="RemoveApp_Click"/>
+                    <CheckBox Grid.Column="2" Style="{StaticResource Toggle}" IsChecked="{Binding On, Mode=TwoWay}" Click="App_Click"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="GameRow">
+            <Border Background="#12FFFFFF" CornerRadius="12" Padding="14,8,8,8" Margin="0,0,0,8">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <TextBlock Text="{l:T 'High priority'}" Foreground="{StaticResource Green}" FontSize="11.5" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button Content="{l:T Remove}" Tag="{Binding}" Style="{StaticResource GhostBtn}" Padding="12,5" HorizontalAlignment="Right" Click="RemoveGame_Click"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,10,0" Margin="28,20,12,0">
+        <StackPanel>
+            <StackPanel Margin="0,0,0,16">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{l:T 'Runs by itself in games'}" Style="{StaticResource MutedText}" FontSize="11.5"/>
+                    <TextBlock Style="{StaticResource Info}" FontSize="12" ToolTip="{l:T 'Gets the PC ready when a game starts and puts everything back when you quit'}"/>
+                </StackPanel>
+                <TextBlock Text="{l:U 'Auto Game Mode'}" Style="{StaticResource H1}" Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!-- status + master switch -->
+            <Border x:Name="Hero" CornerRadius="26" Background="{StaticResource HeroBg}" BorderBrush="{StaticResource CardBorder}" BorderThickness="1" Padding="24,20" Margin="0,0,12,14">
+                <Grid>
+                    <StackPanel Margin="0,0,210,0">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse x:Name="StatusDot" Width="9" Height="9" Fill="{StaticResource Dim}" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="StatusTitle" Style="{StaticResource H2}" FontSize="18" Margin="10,0,0,0"/>
+                            <TextBlock Style="{StaticResource Info}" ToolTip="{l:T 'A game is recognized when it is the window you are in and it is on the My games list below or installed in a Steam, Epic, Riot, Xbox, Ubisoft, EA, GOG or Rockstar library.'}"/>
+                        </StackPanel>
+                        <TextBlock x:Name="StatusText" Style="{StaticResource MutedText}" Margin="0,6,0,0" LineHeight="19"/>
+                    </StackPanel>
+                    <!-- only while game mode is on for something: lets the user say it guessed wrong -->
+                    <Button x:Name="BtnNotGame" Content="{l:T 'Not a game'}" Style="{StaticResource GhostBtn}" Padding="14,6" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,66,0" Visibility="Collapsed" Click="NotGame_Click"/>
+                    <CheckBox x:Name="Master" Style="{StaticResource Toggle}" HorizontalAlignment="Right" VerticalAlignment="Center" Click="Master_Click"/>
+                </Grid>
+            </Border>
+
+            <Grid Margin="0,0,12,0">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="14"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="{l:T 'When a game starts'}" Style="{StaticResource H2}" Margin="0,0,0,16"/>
+                            <ItemsControl x:Name="Options" ItemTemplate="{StaticResource OptionRow}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                                <TextBlock Text="{l:T 'My games'}" Style="{StaticResource H2}"/>
+                                <TextBlock x:Name="GameInfo" Style="{StaticResource Info}"/>
+                            </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource PillBox}" Height="38" CornerRadius="19" Padding="16,0">
+                                    <Grid>
+                                        <TextBlock x:Name="GameHint" Text="{l:T 'e.g. cs2.exe'}" Foreground="{StaticResource Dim}" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <TextBox x:Name="GameExe" Style="{StaticResource Input}" TextChanged="GameExe_TextChanged" KeyDown="GameExe_KeyDown"/>
+                                    </Grid>
+                                </Border>
+                                <Button Grid.Column="1" Content="{l:T Browse}" Style="{StaticResource GhostBtn}" Margin="8,0,0,0" Click="Browse_Click"/>
+                                <Button Grid.Column="2" Content="{l:T Add}" Style="{StaticResource AccentBtn}" Margin="8,0,0,0" Click="AddGame_Click"/>
+                            </Grid>
+                            <ItemsControl x:Name="Games" ItemTemplate="{StaticResource GameRow}" Margin="0,14,0,0"/>
+                            <TextBlock x:Name="NoGames" Text="{l:T 'No games added yet.'}" Foreground="{StaticResource Dim}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{l:T 'Apps to close'}" Style="{StaticResource H2}"/>
+                                <TextBlock Style="{StaticResource Info}" ToolTip="{l:T 'Only apps that are switched on here are ever closed - nothing else is touched. An app that asks about unsaved work is left open, and Windows itself and game launchers can never be added.'}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,7,0,14">
+                                <TextBlock Text="&#xE72E;" Style="{StaticResource Icon}" FontSize="11" Foreground="{StaticResource Green}"/>
+                                <TextBlock Text="{l:T 'Only apps switched on here are ever closed.'}" Foreground="{StaticResource Muted}" FontSize="12" Margin="7,0,0,0"/>
+                            </StackPanel>
+                            <ItemsControl x:Name="Apps" ItemTemplate="{StaticResource AppRow}"/>
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource PillBox}" Height="38" CornerRadius="19" Padding="16,0">
+                                    <Grid>
+                                        <TextBlock x:Name="AppHint" Text="{l:T 'e.g. spotify.exe'}" Foreground="{StaticResource Dim}" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                        <TextBox x:Name="AppExe" Style="{StaticResource Input}" TextChanged="AppExe_TextChanged" KeyDown="AppExe_KeyDown"/>
+                                    </Grid>
+                                </Border>
+                                <Button Grid.Column="1" Content="{l:T Add}" Style="{StaticResource AccentBtn}" Margin="8,0,0,0" Click="AddApp_Click"/>
+                            </Grid>
+                            <TextBlock x:Name="RunningTitle" Text="{l:T 'Running now - click to add'}" Style="{StaticResource Caps}" Margin="0,16,0,8"/>
+                            <WrapPanel x:Name="Running"/>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Name="HeatCard" Style="{StaticResource Card}" Margin="0,14,0,0">
+                        <StackPanel>
+                            <TextBlock Text="{l:T 'Heat Guard'}" Style="{StaticResource H2}"/>
+                            <TextBlock x:Name="HeatText" Style="{StaticResource Desc2}" Margin="0,6,0,12"/>
+                            <Button Content="{l:T 'Reset Heat Guard'}" Style="{StaticResource GhostBtn}" HorizontalAlignment="Left" Click="ResetHeat_Click"/>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Name="NotGamesCard" Style="{StaticResource Card}" Margin="0,14,0,0">
+                        <StackPanel>
+                            <TextBlock Text="{l:T 'Not games'}" Style="{StaticResource H2}"/>
+                            <TextBlock Text="{l:T 'These never start game mode. Click one to remove it from this list.'}" Style="{StaticResource MutedText}" Margin="0,6,0,12"/>
+                            <WrapPanel x:Name="NotGames"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <Border Height="18"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
